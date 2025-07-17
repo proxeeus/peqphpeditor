@@ -1,4 +1,4 @@
-    <div class="edit_form" id="filter_box" style="width: 900px; display: <?echo (isset($filter) && $filter['status'] == 'on') ? 'block' : 'none'?>">
+<div class="edit_form" id="filter_box" style="width: 900px; display: <?echo (isset($filter) && $filter['status'] == 'on') ? 'block' : 'none'?>">
       <div class="edit_form_header">
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
@@ -90,11 +90,19 @@ foreach($databuckets as $databucket):?>
           <td align="center"><?=$databucket['key']?></td>
           <td align="center"><?=$databucket['value']?></td>
           <td align="center"><?echo ($databucket['expires'] > 0) ? get_real_time($databucket['expires']) : "N/A (0)";?></td>
-          <td align="center"><?=getAccountName($databucket['account_id'])?> (<?=$databucket['account_id']?>)</td>
+          <td align="center"><?php echo isset($databucket['account_id']) ? getAccountName($databucket['account_id']) . " (" . $databucket['account_id'] . ")" : "N/A";?></td>
           <td align="center"><?=getPlayerName($databucket['character_id'])?> (<?=$databucket['character_id']?>)</td>
           <td align="center"><?=getNPCName($databucket['npc_id'])?> (<?=$databucket['npc_id']?>)</td>
           <td align="center"><?echo ($databucket['bot_id'] > 0) ? $databucket['bot_id'] : "N/A (0)";?></td>
-          <td align="center"><?echo ($databucket['zone_id'] > 0) ? getZoneName($databucket['zone_id']) . "(" . $databucket['zone_id'] . "-" . $databucket['instance_id'] . ")" : "N/A (" . $databucket['zone_id'] . "-" . $databucket['instance_id'] . ")";?></td>
+          <td align="center">
+<?php
+if (isset($databucket['zone_id']) && isset($databucket['instance_id'])) {
+    echo ($databucket['zone_id'] > 0) ? getZoneName($databucket['zone_id']) . "(" . $databucket['zone_id'] . "-" . $databucket['instance_id'] . ")" : "N/A (" . $databucket['zone_id'] . "-" . $databucket['instance_id'] . ")";
+} else {
+    echo "N/A";
+}
+?>
+</td>
           <td align="right"><a href="index.php?editor=databuckets&id=<?=$databucket['id']?>&action=4"><img src="images/edit2.gif" width="13" height="13" border="0" title="Edit Data Bucket" alt="Edit"></a>&nbsp;<a onClick="return confirm('Really delete data bucket?');" href="index.php?editor=databuckets&id=<?=$databucket['id']?>&action=6"><img src="images/remove3.gif" border="0" title="Delete Data Bucket" alt="Delete"></a></td>
         </tr>
 <?$x++;
