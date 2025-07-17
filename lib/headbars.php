@@ -198,6 +198,9 @@ switch ($editor) {
     break;
   case 'parcels':
     break;
+  case 'bot_spells_entries':
+    $searchbar = new Template("templates/bot_spells_entries_editor.tmpl.php");
+    break;
 }
 
 function build_tabs() {
@@ -237,6 +240,7 @@ function build_tabs() {
   $tabstatus32 = "off";
   $tabstatus33 = "off";
   $tabstatus34 = "off";
+  $tabstatus35 = "off";
 
   $zoneurl = "";
   $npcurl = "";
@@ -354,6 +358,9 @@ function build_tabs() {
     case 'parcels':
       $tabstatus34 = "on";
       break;
+    case 'bot_spells_entries':
+      $tabstatus35 = "on";
+      break;
   }
 
   $admin = '';
@@ -398,6 +405,7 @@ function build_tabs() {
         <div class=\"$tabstatus32\"><a href=\"index.php?editor=mercs\">Mercs</a></div>
         <div class=\"$tabstatus33\"><a href=\"index.php?editor=chat\">Chat</a></div>
         <div class=\"$tabstatus34\"><a href=\"index.php?editor=parcels\">Parcels</a></div>
+        <div class=\"$tabstatus35\"><a href=\"index.php?editor=bot_spells_entries\">Bot Spells Entries</a></div>
         <div style=\"float: right;\">$admin<a href=\"index.php?logout\">Logout</a></div><br><br>
       </div>
 ";

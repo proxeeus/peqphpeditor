@@ -31,7 +31,13 @@ class Template {
         if ($this->vars)
         extract($this->vars);          // Extract the vars to local namespace
         ob_start();                    // Start output buffering
-        include($file);                // Include the file
+        if (file_exists($file)) {
+            include($file); 
+        } elseif (file_exists("templates/spells/" . basename($file))) {
+            include("templates/spells/" . basename($file));
+        } else {
+            trigger_error("Template not found: " . $file, E_USER_WARNING);
+        }
         $contents = ob_get_contents(); // Get the contents of the buffer
         ob_end_clean();                // End buffering and discard
         return $contents;              // Return the contents
