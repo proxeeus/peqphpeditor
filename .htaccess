@@ -1,7 +1,7 @@
 Options -Indexes
 
 <Files ~ "\.(php|sql)$">
-  Require all denied
+  Require all granted
 </Files>
 
 <Files index.php>
