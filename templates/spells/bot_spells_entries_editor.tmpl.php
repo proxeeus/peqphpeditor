@@ -395,27 +395,44 @@ $(document).ready(function() {
   });
 
   // Save changes
-  $(document).on('change', '.editable', function() {
-    const id = $(this).data('id');
-    const column = $(this).data('column');
-    const value = $(this).val();
-    // If text input and empty, show error and prevent update
-    if ($(this).is('input[type="text"]') && value.trim() === '') {
+$(document).on('change', '.editable', function() {
+  const id = $(this).data('id');
+  const column = $(this).data('column');
+  const value = $(this).val();
+
+  // If text input and empty, show error and prevent update
+  if ($(this).is('input[type="text"]') && value.trim() === '') {
+    // Exempt bucket_name and bucket_value from the empty field validation
+    if (column === 'bucket_name' || column === 'bucket_value') {
+      // Allow empty value for these columns
+      $.ajax({
+        url: 'ajax/spells/bot_spells_entries.php?action=update',
+        method: 'POST',
+        data: { id, column, value },
+        success: function() {
+          if ($('#class-select').val()) $('#class-select').trigger('change');
+        }
+      });
+      return;
+    } else {
+      // Show error for other columns
       showFieldEmptyModal();
       $(this).val($(this).attr('value'));
       setTimeout(function() { hideFieldEmptyModal(); }, 2000);
       return;
     }
-    hideFieldEmptyModal();
-    $.ajax({
-      url: 'ajax/spells/bot_spells_entries.php?action=update',
-      method: 'POST',
-      data: { id, column, value },
-      success: function() {
-        if ($('#class-select').val()) $('#class-select').trigger('change');
-      }
-    });
+  }
+
+  hideFieldEmptyModal();
+  $.ajax({
+    url: 'ajax/spells/bot_spells_entries.php?action=update',
+    method: 'POST',
+    data: { id, column, value },
+    success: function() {
+      if ($('#class-select').val()) $('#class-select').trigger('change');
+    }
   });
+});
 
   // Delete entry
   $(document).on('click', '.delete', function() {
@@ -565,29 +582,36 @@ $(document).ready(function() {
     hideFieldEmptyModal();
   });
   // Intercept save/update actions and validate fields
-  $(document).on('blur change', '.editable', function(e) {
+ $(document).on('blur change', '.editable', function(e) {
+  var $input = $(this);
+  var column = $input.data('column');
+
+  // Exempt bucket_name and bucket_value from the empty field validation
+  if ($input.val().trim() === '' && column !== 'bucket_name' && column !== 'bucket_value') {
+    showFieldEmptyModal();
+    $input.val($input.data('original') || '');
+    $input.focus();
+    e.preventDefault();
+    return false;
+  }
+});
+
+// Prevent AJAX/database action if field is empty
+$(document).on('keydown', '.editable', function(e) {
+  if (e.key === 'Enter') {
     var $input = $(this);
-    if ($input.val().trim() === '') {
+    var column = $input.data('column');
+
+    // Exempt bucket_name and bucket_value from the empty field validation
+    if ($input.val().trim() === '' && column !== 'bucket_name' && column !== 'bucket_value') {
       showFieldEmptyModal();
       $input.val($input.data('original') || '');
       $input.focus();
       e.preventDefault();
       return false;
     }
-  });
-  // Prevent AJAX/database action if field is empty
-  $(document).on('keydown', '.editable', function(e) {
-    if (e.key === 'Enter') {
-      var $input = $(this);
-      if ($input.val().trim() === '') {
-        showFieldEmptyModal();
-        $input.val($input.data('original') || '');
-        $input.focus();
-        e.preventDefault();
-        return false;
-      }
-    }
-  });
+  }
+});
   // Prevent form submission on Enter in spell search input
   $('#spell_search').closest('form').on('submit', function(e) {
     e.preventDefault();

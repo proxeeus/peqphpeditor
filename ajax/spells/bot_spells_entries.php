@@ -56,9 +56,9 @@ switch ($action) {
             1,      // priority
             0,      // resist_adjust
             0,      // min_hp
-            100,    // max_hp
+            0,      // max_hp
             '',     // bucket_name
-            0,      // bucket_value
+            '',     // bucket_value
             0       // bucket_comparison
         ];
         $stmt = $mysql_content_db->prepare($query);
@@ -88,7 +88,7 @@ switch ($action) {
     if ($id > 0 && in_array($column, $allowed_columns, true)) {
       $numeric_columns = [
         'type', 'minlevel', 'maxlevel', 'manacost', 'recast_delay', 'priority',
-        'resist_adjust', 'min_hp', 'max_hp', 'bucket_value'
+        'resist_adjust', 'min_hp', 'max_hp'
       ];
       if (in_array($column, $numeric_columns, true)) {
         $value = is_numeric($value) ? (int)$value : 0;
