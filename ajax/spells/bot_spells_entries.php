@@ -56,7 +56,7 @@ switch ($action) {
             1,      // priority
             0,      // resist_adjust
             0,      // min_hp
-            100,    // max_hp
+            0,      // max_hp // Changed default value to 0
             '',     // bucket_name
             0,      // bucket_value
             0       // bucket_comparison

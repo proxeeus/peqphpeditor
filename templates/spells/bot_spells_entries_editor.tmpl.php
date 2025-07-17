@@ -388,17 +388,27 @@ $(document).ready(function() {
     $.ajax({
       url: 'ajax/spells/bot_spells_entries.php?action=add',
       method: 'POST',
+      data: { maxhp: 0 }, // Ensure maxhp defaults to 0
       success: function() {
         if ($('#class-select').val()) $('#class-select').trigger('change');
       }
     });
   });
 
-  // Save changes
+  // Remove bucket_name and bucket_value columns from the table header
+  $('#bot_spells_table thead tr th:contains("Bucket Name"), #bot_spells_table thead tr th:contains("Bucket Value")').remove();
+
+  // Ensure bucket_name and bucket_value fields are editable
   $(document).on('change', '.editable', function() {
     const id = $(this).data('id');
     const column = $(this).data('column');
-    const value = $(this).val();
+    let value = $(this).val();
+
+    // Set default value for maxhp to 0 if empty
+    if (column === 'maxhp' && value.trim() === '') {
+        value = '0';
+    }
+
     // If text input and empty, show error and prevent update
     if ($(this).is('input[type="text"]') && value.trim() === '') {
       showFieldEmptyModal();
@@ -565,9 +575,13 @@ $(document).ready(function() {
     hideFieldEmptyModal();
   });
   // Intercept save/update actions and validate fields
+  $(document).off('blur change', '.editable');
   $(document).on('blur change', '.editable', function(e) {
     var $input = $(this);
-    if ($input.val().trim() === '') {
+    var column = $input.data('column');
+
+    // Only validate non-bucket_name and non-bucket_value fields
+    if (column !== 'bucket_name' && column !== 'bucket_value' && $input.val().trim() === '') {
       showFieldEmptyModal();
       $input.val($input.data('original') || '');
       $input.focus();
@@ -575,17 +589,19 @@ $(document).ready(function() {
       return false;
     }
   });
-  // Prevent AJAX/database action if field is empty
+
+  $(document).off('keydown', '.editable');
   $(document).on('keydown', '.editable', function(e) {
-    if (e.key === 'Enter') {
-      var $input = $(this);
-      if ($input.val().trim() === '') {
-        showFieldEmptyModal();
-        $input.val($input.data('original') || '');
-        $input.focus();
-        e.preventDefault();
-        return false;
-      }
+    var $input = $(this);
+    var column = $input.data('column');
+
+    // Only validate non-bucket_name and non-bucket_value fields
+    if (column !== 'bucket_name' && column !== 'bucket_value' && e.key === 'Enter' && $input.val().trim() === '') {
+      showFieldEmptyModal();
+      $input.val($input.data('original') || '');
+      $input.focus();
+      e.preventDefault();
+      return false;
     }
   });
   // Prevent form submission on Enter in spell search input
