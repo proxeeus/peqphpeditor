@@ -62,7 +62,7 @@ switch ($action) {
             0       // bucket_comparison
         ];
         $stmt = $mysql_content_db->prepare($query);
-        $stmt->bind_param('iiiiiiiiiiiisi', ...$params);
+        $stmt->bind_param('iiiiiiiiiiissi', ...$params);
         if ($stmt->execute()) {
             echo 'success';
             exit;
