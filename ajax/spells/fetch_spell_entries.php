@@ -28,6 +28,7 @@ $spell_types = [
   1 << 19 => 'OutOfCombatBuffSong',
   1 << 20 => 'PreCombatBuff',
   1 << 21 => 'PreCombatBuffSong',
+  1 << 22 => 'Twitch',
 ];
 
 $npc_spells_id = $_GET['npc_spells_id'] ?? '';
@@ -64,7 +65,7 @@ foreach ($results as $row) {
   echo "<td><select class='editable' data-id='{$row['id']}' data-column='type' style='width:90px;'>";
   foreach ($spell_types as $bit => $label) {
     $selected = ($row['type'] == $bit) ? 'selected' : '';
-    echo "<option value='$bit' $selected>($bit) $label</option>";
+    echo "<option value='$bit' $selected>$label</option>";
   }
   echo "</select></td>";
   echo "<td><input type='text' class='editable' data-id='{$row['id']}' data-column='minlevel' value='{$row['minlevel']}'></td>";
